@@ -30,6 +30,15 @@ final class Crypto {
         return currentPrice.formatted(.currency(code: "USD"))
     }
     
+    var formattedHigh: String {
+        return highestPrice.formatted(.currency(code: "USD"))
+    }
+    
+    var formattedLow: String {
+        return lowestPrice.formatted(.currency(code: "USD"))
+    }
+    
+    
     var safeImageURL: URL? {
         print("Safe image URL \(id): \(image)")
         return URL(string: image)
