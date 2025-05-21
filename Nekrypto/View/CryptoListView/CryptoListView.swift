@@ -11,7 +11,6 @@ import SwiftData
 struct CryptoListView: View {
 
     @Environment(\.modelContext) private var modelContext
-    
     @State private var viewModel = CryptoListViewModel()
 
     var body: some View {
@@ -19,7 +18,7 @@ struct CryptoListView: View {
             List {
                 ForEach(viewModel.cryptoList) { crypto in
                     NavigationLink {
-                        Text("\(crypto.symbol)")
+                        CryptoDetailView(crypto: crypto)
                     } label: {
                         CryptoRowView(crypto: crypto)
                     }
@@ -28,13 +27,20 @@ struct CryptoListView: View {
             .toolbar {
                 ToolbarItem {
                     Button {
-                        viewModel.refreshList(modelContext: modelContext)
+                        viewModel.fetchData()
                     } label: {
                         // Symbol arrow.clockwise got from SF Symbols App.
-                        Label("Add Item", systemImage: "arrow.clockwise")
+                        if viewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            Label("Add Item", systemImage: "arrow.clockwise")
+                        }
                     }
                 }
             }
+            .refreshable(action: {
+                viewModel.fetchData()
+            })
             .overlay {
                 if viewModel.cryptoList.count == 0 {
                     VStack {
@@ -47,12 +53,14 @@ struct CryptoListView: View {
             Text("Select an item")
         }
         .onAppear() {
-            viewModel.refreshList(modelContext: modelContext)
+            viewModel.modelContext = modelContext
+            viewModel.refreshList()
         }
     }
 }
 
 #Preview("No Data") {
+    
     CryptoListView()
         .modelContainer(for: Crypto.self, inMemory: true)
 }

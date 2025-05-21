@@ -7,13 +7,21 @@
 import Foundation
 import SwiftUI
 import SwiftData
+import Combine
 
 @Observable
 class CryptoListViewModel {
-                           
-    public var cryptoList: [Crypto] = []
     
-    public func refreshList(modelContext: ModelContext) {
+    public var modelContext: ModelContext? = nil
+    
+    public var cryptoList: [Crypto] = []
+    public var isLoading: Bool = false //Indicates if content is beign downloaded.
+    public var errorMessage: String? = nil //Used to share error messages to the view.
+    
+    private var observers: [AnyCancellable] = []
+    
+    public func refreshList() {
+        guard let modelContext = modelContext else { return }
         do {
             var descriptor = FetchDescriptor<Crypto>(
                 sortBy: [SortDescriptor(\.currentPrice, order: .reverse)],
@@ -24,6 +32,54 @@ class CryptoListViewModel {
             print("Error fetching data: \(error)")
         }
         print(cryptoList.count)
+    }
+    
+    public func fetchData() {
+    
+        self.isLoading = true
+        
+        GeckoService.shared.fetchData() //Pulls data from the service, around 100 crypto coins.
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { result in
+                    switch result {
+                    case .failure(let error):
+                        self.errorMessage = error.localizedDescription
+                        break
+                    case .finished:
+                        self.isLoading = false
+                        self.errorMessage = nil
+                    }
+                },
+                receiveValue: { data in
+                    data.forEach { cryptoData in
+                        guard let modelContext = self.modelContext else { return }
+                        
+                        let crypto = Crypto(data:cryptoData)
+                        self.addCrypto(crypto: crypto, context: modelContext)
+                    }
+                    self.isLoading = false
+                    self.refreshList()
+                })
+            .store(in: &observers)
+    }
+    
+    func addCrypto(crypto: Crypto, context: ModelContext) {
+        // Search if ID is already registered or not
+        let crypto_id = crypto.id
+        
+        let descriptor = FetchDescriptor<Crypto>(predicate: #Predicate { $0.id == crypto_id })
+
+        if let existing = try? context.fetch(descriptor), !existing.isEmpty {
+            if let value = existing.first {
+                value.updateValues(data: crypto)
+            } else {
+                print("Algo raro sucedió.")
+            }
+            return
+        }
+        // If it does not exist, add it new
+        context.insert(crypto)
     }
     
     // Container Preview for MockData

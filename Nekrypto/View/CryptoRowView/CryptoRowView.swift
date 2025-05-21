@@ -18,11 +18,13 @@ struct CryptoRowView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 48, height: 48)
+                    .padding(.trailing)
             } placeholder: {
                 Image("crypto_template")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 48, height: 48)
+                    .padding(.trailing)
             }
 
             VStack(alignment: .leading) {

@@ -62,4 +62,19 @@ final class Crypto {
         self.lowestPrice = data.low24h ?? 0
         self.priceChange24h = data.priceChange24h ?? 0
     }
+    
+    func updateValues(data: Crypto) {
+        // The ID wont ever change, the name and symbol is less prone to change, but could happen...
+        //self.id = data.id
+        self.symbol = data.symbol
+        self.name = data.name
+        self.image = data.image
+        self.currentPrice = data.currentPrice
+        self.marketCap = data.marketCap
+        self.lastUpdated = data.lastUpdated
+        self.totalVolume = data.totalVolume
+        self.highestPrice = data.highestPrice
+        self.lowestPrice = data.lowestPrice
+        self.priceChange24h = data.priceChange24h
+    }
 }
