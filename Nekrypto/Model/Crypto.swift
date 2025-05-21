@@ -18,6 +18,14 @@ final class Crypto {
     var marketCap: Decimal
     var lastUpdated: String
     
+    var totalVolume: Decimal
+    var highestPrice: Decimal
+    var lowestPrice: Decimal
+    var priceChange24h: Decimal
+    
+    @Attribute(.externalStorage)
+    var picture: Data?
+    
     var formattedPrice: String {
         return currentPrice.formatted(.currency(code: "USD"))
     }
@@ -27,7 +35,7 @@ final class Crypto {
         return URL(string: image)
     }
     
-    init(id: String, symbol: String, name: String, image: String, currentPrice: Decimal, marketCap: Decimal, lastUpdated: String) {
+    init(id: String, symbol: String, name: String, image: String, currentPrice: Decimal, marketCap: Decimal, lastUpdated: String, totalVolume: Decimal, highestPrice: Decimal, lowestPrice: Decimal, priceChange24h: Decimal) {
         self.id = id
         self.symbol = symbol
         self.name = name
@@ -35,6 +43,10 @@ final class Crypto {
         self.currentPrice = currentPrice
         self.marketCap = marketCap
         self.lastUpdated = lastUpdated
+        self.totalVolume = totalVolume
+        self.highestPrice = highestPrice
+        self.lowestPrice = lowestPrice
+        self.priceChange24h = priceChange24h
     }
     
     init(data: GeckoCryptocurrency) {
@@ -45,5 +57,9 @@ final class Crypto {
         self.currentPrice = data.currentPrice ?? 0
         self.marketCap = data.marketCap ?? 0
         self.lastUpdated = data.lastUpdated ?? ""
+        self.totalVolume = data.totalVolume ?? 0
+        self.highestPrice = data.high24h ?? 0
+        self.lowestPrice = data.low24h ?? 0
+        self.priceChange24h = data.priceChange24h ?? 0
     }
 }

@@ -14,29 +14,35 @@ struct CryptoDetailView: View {
 
     var body: some View {
         NavigationSplitView {
-            HStack {
+            VStack {
                 AsyncImage (url: crypto.safeImageURL) { image in
                     image
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 48, height: 48)
+                        .frame(width: 200, height: 200)
                 } placeholder: {
                     Image("crypto_template")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 48, height: 48)
+                        .frame(width: 200, height: 200)
                 }
-
-                VStack(alignment: .leading) {
+                .padding(.vertical)
+                
                     Text("\(crypto.name)")
+                        .font(.title)
                     Text("\(crypto.symbol)")
-                        .font(.footnote)
-                }
-                Spacer()
-                VStack (alignment: .trailing) {
-                    Text("\(crypto.formattedPrice)")
-                    Text("\(crypto.lastUpdated)")
-                        .font(.caption)
+                        .font(.title2)
+                        .foregroundColor(.secondary)
+                List {
+                    Section ("Price 24h") {
+                        Text("\(crypto.formattedPrice)")
+                        Text("\(crypto.lastUpdated)")
+                        Text("\(crypto.totalVolume)")
+                        Text("\(crypto.highestPrice)")
+                        Text("\(crypto.lowestPrice)")
+                        Text("\(crypto.priceChange24h)")
+                        Text("\(crypto.marketCap)")
+                    }
                 }
             }
         } detail: {
@@ -46,6 +52,5 @@ struct CryptoDetailView: View {
 }
 
 #Preview {
-    
     CryptoDetailView(crypto: Crypto(data: GeckoService.getMoackDataList(count: 1)[0]))
 }
