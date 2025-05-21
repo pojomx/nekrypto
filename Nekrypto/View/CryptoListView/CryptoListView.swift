@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  CryptoListView.swift
 //  Nekrypto
 //
 //  Created by Alan Milke on 20/05/25.
@@ -8,31 +8,35 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct CryptoListView: View {
+
     @Environment(\.modelContext) private var modelContext
-    @Query private var cryptos: [Crypto]
+    
+    @State private var viewModel = CryptoListViewModel()
 
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(cryptos) { crypto in
+                ForEach(viewModel.cryptoList) { crypto in
                     NavigationLink {
                         Text("\(crypto.symbol)")
                     } label: {
-                        Text("\(crypto.symbol)")
+                        CryptoRowView(crypto: crypto)
                     }
                 }
             }
             .toolbar {
                 ToolbarItem {
-                    Button(action: refreshAction) {
+                    Button {
+                        viewModel.refreshList(modelContext: modelContext)
+                    } label: {
                         // Symbol arrow.clockwise got from SF Symbols App.
                         Label("Add Item", systemImage: "arrow.clockwise")
                     }
                 }
             }
             .overlay {
-                if cryptos.count == 0 {
+                if viewModel.cryptoList.count == 0 {
                     VStack {
                         Text("No items found.")
                         Text("Tap the refresh button to update the list.")
@@ -42,15 +46,19 @@ struct ContentView: View {
         } detail: {
             Text("Select an item")
         }
-    }
-
-    
-    private func refreshAction() {
-        //no-op
+        .onAppear() {
+            viewModel.refreshList(modelContext: modelContext)
+        }
     }
 }
 
-#Preview {
-    ContentView()
+#Preview("No Data") {
+    CryptoListView()
         .modelContainer(for: Crypto.self, inMemory: true)
+}
+    
+#Preview("Some Data") {
+    let container = try! ModelContainer(for: Crypto.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    
+    return CryptoListViewModel.makeContainerPreview(container: container, count: 5)
 }

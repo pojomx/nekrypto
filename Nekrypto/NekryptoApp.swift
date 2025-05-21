@@ -25,7 +25,7 @@ struct NekryptoApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CryptoListView()
         }
         .modelContainer(sharedModelContainer)
     }
