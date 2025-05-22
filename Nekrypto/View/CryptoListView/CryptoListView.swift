@@ -22,13 +22,9 @@ struct CryptoListView: View {
                         .foregroundColor(.red)
                 }
             }
-            List {
-                ForEach(viewModel.filteredCryptos) { crypto in
-                    NavigationLink {
-                        CryptoDetailView(crypto: crypto)
-                    } label: {
-                        CryptoRowView(crypto: crypto)
-                    }
+            List (viewModel.filteredCryptos, selection: $viewModel.selected) { crypto in
+                NavigationLink(value: crypto) {
+                    CryptoRowView(crypto: crypto)
                 }
             }
             .toolbar {
@@ -64,7 +60,12 @@ struct CryptoListView: View {
                 }
             }
         } detail: {
-            Text("Select an item")
+            if let selected = viewModel.selected {
+                    CryptoDetailView(crypto: selected)
+            } else {
+                Text("Select a crypto")
+                    .foregroundColor(.secondary)
+            }
         }
         .onAppear() {
             viewModel.modelContext = modelContext

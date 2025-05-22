@@ -10,10 +10,10 @@ import SwiftUI
 struct CryptoDetailView: View {
     @Environment(\.modelContext) private var modelContext
     
-    @State var crypto: Crypto
+    let crypto: Crypto
 
     var body: some View {
-        NavigationSplitView {
+        NavigationStack {
             VStack {
                 AsyncImage (url: crypto.safeImageURL) { image in
                     image
@@ -120,8 +120,6 @@ struct CryptoDetailView: View {
                     }
                 }
             }
-        } detail: {
-            Text("Item Selected")
         }
     }
 }

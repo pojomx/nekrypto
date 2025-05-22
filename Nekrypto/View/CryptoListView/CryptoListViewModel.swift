@@ -13,8 +13,7 @@ import Combine
 class CryptoListViewModel {
     
     public var modelContext: ModelContext? = nil
-    
-    
+    public var selected: Crypto? = nil
     public var isLoading: Bool = false //Indicates if content is beign downloaded.
     public var errorMessage: String? = nil //Used to share error messages to the view.
     

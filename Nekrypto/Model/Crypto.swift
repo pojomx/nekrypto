@@ -87,3 +87,14 @@ final class Crypto {
         self.priceChange24h = data.priceChange24h
     }
 }
+
+extension Crypto: Hashable {
+    static func == (lhs: Crypto, rhs: Crypto) -> Bool {
+        return lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
