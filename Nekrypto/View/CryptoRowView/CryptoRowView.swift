@@ -26,17 +26,25 @@ struct CryptoRowView: View {
                     .frame(width: 48, height: 48)
                     .padding(.trailing)
             }
+            
+            
 
             VStack(alignment: .leading) {
-                Text("\(crypto.name)")
-                Text("\(crypto.symbol)")
-                    .font(.footnote)
-            }
-            Spacer()
-            VStack (alignment: .trailing) {
-                Text("\(crypto.formattedPrice)")
-                Text("\(crypto.lastUpdated)")
-                    .font(.caption)
+
+                HStack {
+                    Text("\(crypto.name)")
+                }
+                HStack (alignment: .top) {
+                    Text("\(crypto.symbol)")
+                        .font(.footnote)
+                    Spacer()
+                    VStack (alignment: .trailing) {
+                        Text("\(crypto.formattedPrice)")
+                            .font(.title2)
+                        Text("\(crypto.lastUpdated)")
+                            .font(.caption)
+                    }
+                }
             }
         }
     }

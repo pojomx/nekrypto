@@ -11,12 +11,19 @@ import SwiftData
 struct CryptoListView: View {
 
     @Environment(\.modelContext) private var modelContext
-    @State private var viewModel = CryptoListViewModel()
+    @State fileprivate var viewModel = CryptoListViewModel()
 
     var body: some View {
         NavigationSplitView {
+            if viewModel.errorMessage != nil {
+                HStack {
+                    Text("Error: \(viewModel.errorMessage!)")
+                        .font(.headline)
+                        .foregroundColor(.red)
+                }
+            }
             List {
-                ForEach(viewModel.cryptoList) { crypto in
+                ForEach(viewModel.filteredCryptos) { crypto in
                     NavigationLink {
                         CryptoDetailView(crypto: crypto)
                     } label: {
@@ -38,14 +45,21 @@ struct CryptoListView: View {
                     }
                 }
             }
+            .searchable(text: $viewModel.searchFilter, prompt: "Search Crypto")
             .refreshable(action: {
                 viewModel.fetchData()
             })
+            .navigationTitle("Cryptocurrencies")
             .overlay {
-                if viewModel.cryptoList.count == 0 {
+                if viewModel.filteredCryptos.count == 0 && viewModel.searchFilter.isEmpty {
                     VStack {
                         Text("No items found.")
                         Text("Tap the refresh button to update the list.")
+                    }
+                } else if viewModel.filteredCryptos.count == 0 && !viewModel.searchFilter.isEmpty {
+                    VStack {
+                        Text("No items found.")
+                        Text("No items found, try searching something else.")
                     }
                 }
             }

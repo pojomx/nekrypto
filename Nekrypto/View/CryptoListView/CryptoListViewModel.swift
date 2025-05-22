@@ -14,10 +14,24 @@ class CryptoListViewModel {
     
     public var modelContext: ModelContext? = nil
     
-    public var cryptoList: [Crypto] = []
+    
     public var isLoading: Bool = false //Indicates if content is beign downloaded.
     public var errorMessage: String? = nil //Used to share error messages to the view.
     
+    public var searchFilter: String = "" // String to filter with
+    private var cryptoList: [Crypto] = [] // Array of Cryptos
+    
+    public var filteredCryptos: [Crypto] { // Array of Filtered Cryptos
+        if searchFilter.isEmpty {
+            return cryptoList
+        } else {
+            return cryptoList.filter {
+                $0.name.lowercased().contains(searchFilter.lowercased()) || $0.symbol.lowercased().contains(searchFilter.lowercased()) //Interested in Coin Name and Coin Symbol
+                
+            }
+        }
+    }
+
     private var observers: [AnyCancellable] = []
     
     public func refreshList() {
@@ -42,12 +56,12 @@ class CryptoListViewModel {
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { result in
+                    self.isLoading = false
                     switch result {
                     case .failure(let error):
                         self.errorMessage = error.localizedDescription
                         break
                     case .finished:
-                        self.isLoading = false
                         self.errorMessage = nil
                     }
                 },
@@ -58,7 +72,6 @@ class CryptoListViewModel {
                         let crypto = Crypto(data:cryptoData)
                         self.addCrypto(crypto: crypto, context: modelContext)
                     }
-                    self.isLoading = false
                     self.refreshList()
                 })
             .store(in: &observers)
