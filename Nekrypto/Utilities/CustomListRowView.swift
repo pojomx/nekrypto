@@ -10,6 +10,7 @@ import SwiftUI
 struct CustomListRowView: View {
 
     @State var rowContent: String
+    @State var rowContent2: String?
     @State var rowLabel: String
     @State var rowIcon: String
     @State var rowTintColor: Color
@@ -20,6 +21,12 @@ struct CustomListRowView: View {
                 Text(rowContent)
                     .tint(.primary)
                     .fontWeight(.medium)
+                if let content2 = rowContent2 {
+                    Text(content2)
+                        .tint(.secondary)
+                        .font(.caption)
+                        .fontWeight(.light)
+                }
             }
         } label: {
             HStack {
@@ -40,5 +47,6 @@ struct CustomListRowView: View {
 #Preview {
     List {
         CustomListRowView(rowContent: "pojomx", rowLabel: "test", rowIcon: "cloud", rowTintColor: .pink)
+        CustomListRowView(rowContent: "pojomx", rowContent2: "Second Row", rowLabel: "test", rowIcon: "cloud", rowTintColor: .green)
     }
 }

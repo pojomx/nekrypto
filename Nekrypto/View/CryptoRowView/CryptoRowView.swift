@@ -45,12 +45,15 @@ struct CryptoRowView: View {
                 HStack (alignment: .top) {
                     Text("\(crypto.symbol)")
                         .font(.footnote)
+                        .fontWeight(.bold)
                     Spacer()
                     VStack (alignment: .trailing) {
                         Text("\(crypto.formattedPrice)")
                             .font(.title2)
-                        Text("\(crypto.lastUpdated)")
+                            .fontWeight(.bold)
+                        Text("\(crypto.formattedDate)")
                             .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                 }
             }

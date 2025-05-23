@@ -38,6 +38,10 @@ final class Crypto {
         return lowestPrice.formatted(.currency(code: "USD"))
     }
     
+    var formattedDate: String {
+        return Date.calculateBroadcastDate(lastUpdated) ?? "..."
+    }
+    
     
     var safeImageURL: URL? {
         print("Safe image URL \(id): \(image)")

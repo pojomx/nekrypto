@@ -87,16 +87,24 @@ struct CryptoDetailView: View {
                                 .font(.caption)
                         }
                         Spacer()
-                    }
+                    } // .HEADER HStack
                     
                     //MARK: - DETAILS
                     
-                    Section ("Price 24h | Updated: \(crypto.lastUpdated)") {
+                    Section {
                         CustomListRowView(
                             rowContent: "\(crypto.formattedPrice)",
                             rowLabel: "Current Price",
                             rowIcon: "bitcoinsign.bank.building",
                             rowTintColor: Color.orange)
+                        .id(crypto.id)
+                        
+                        CustomListRowView(
+                            rowContent: "\(crypto.formattedDate)",
+                            rowContent2: "\(TimeZone.current)",
+                            rowLabel: "Last Updated",
+                            rowIcon: "clock",
+                            rowTintColor: .blue)
                         .id(crypto.id)
                         
                         CustomListRowView(
@@ -133,8 +141,13 @@ struct CryptoDetailView: View {
                             rowIcon: "bitcoinsign.bank.building.fill",
                             rowTintColor: .accent)
                         .id(crypto.id)
-                    }
-                }
+                    } header: {
+                        Text("Other Information")
+                    } footer: {
+                        Text("Data has been fetched from CoinGecko API.\nLast updated: \(crypto.formattedDate)")
+                            .font(.footnote)
+                    }//. Section
+                } // .List
             }
         }
         .navigationTitle("\(crypto.symbol) - \(crypto.name)")
