@@ -47,9 +47,15 @@ class CryptoListViewModel {
         print(cryptoList.count)
     }
     
+    public func resetErrorMessage(errorMessage: String? = nil) {
+        //COuld do more things like use log service to do something else. 
+        self.errorMessage = errorMessage
+    }
+    
     public func fetchData() {
     
         self.isLoading = true
+        self.errorMessage = nil
         
         GeckoService.shared.fetchData() //Pulls data from the service, around 100 crypto coins.
             .receive(on: DispatchQueue.main)

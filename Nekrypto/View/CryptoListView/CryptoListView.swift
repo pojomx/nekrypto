@@ -17,9 +17,16 @@ struct CryptoListView: View {
         NavigationSplitView {
             if viewModel.errorMessage != nil {
                 HStack {
-                    Text("Error: \(viewModel.errorMessage!)")
-                        .font(.headline)
-                        .foregroundColor(.red)
+                    Button {
+                        viewModel.resetErrorMessage()
+                    } label: {
+                        Text("Error: \(viewModel.errorMessage!)")
+                            .font(.system(.headline, design: .rounded))
+                            .fontWeight(.bold)
+                    }//: BUTTON
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .controlSize(.mini)
                 }
             }
             List (viewModel.filteredCryptos, selection: $viewModel.selected) { crypto in
