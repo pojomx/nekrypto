@@ -9,44 +9,22 @@ import Foundation
 import SwiftUI
 
 extension Crypto {
-    
-    // WIP
     // Addind this here to handle cache instead of using Async Image, downlaods the picture
     // the first time only, and stores it in swift data Picture field.
     
-    func getImage () -> Image {
-        // If picture is set, it uses that, if not, it will try to download it.
-        if picture == nil {
-            // Start downloading picture.
-            downloadImage()
-            //send a template for now
-            return Image("crypto_template")
-        } else {
-            
-            if let picture = picture, let image = UIImage(data: picture) {
-                return Image(uiImage: image)
-            }
-            
-            return Image("crypto_template")
-        }
-    }
+    // This code is mostly from: https://stackoverflow.com/questions/32322386/how-to-download-multiple-files-sequentially-using-urlsession-downloadtask-in-swi
+    // Allow to download "cache" for images, and store that. Modified it to store this in SwiftData instead.
     
-    func downloadImage() {
-        
-        guard let url = URL(string: image) else {
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data else {
-                // woot
-                return
-            }
-            
-            //Notify picture is updated
-            self.picture = data
-        }
-        task.resume()
+    func downloadPicture() async throws -> Data? {
+        // if picture is already set, just give it back.
+        if picture != nil { return picture }
+        // if not, download it.
+        guard let imageURL = URL(string: image) else { return nil }
+        // Ignoring result... for now... anything fails, go to template.
+        let (data, _) = try await URLSession.shared.data(from: imageURL)
+        //set data to object to keeep it.
+        self.picture = data
+        // return data to continue...
+        return data
     }
-    
 }

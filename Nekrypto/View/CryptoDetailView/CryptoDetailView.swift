@@ -15,18 +15,20 @@ struct CryptoDetailView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                AsyncImage (url: crypto.safeImageURL) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200, height: 200)
-                } placeholder: {
+                if crypto.picture == nil {
                     Image("crypto_template")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 200, height: 200)
+                        .padding(.vertical)
+                } else {
+                    Image(uiImage: UIImage(data: crypto.picture!)!)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 200, height: 200)
+                        .padding(.vertical)
                 }
-                .padding(.vertical)
+                
                 
                 Text("\(crypto.name)")
                     .font(.title)

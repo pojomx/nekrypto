@@ -10,25 +10,33 @@ import SwiftUI
 struct CryptoRowView: View {
     
     @State var crypto: Crypto
+    @State var picture: Data? = nil
     
     var body: some View {
         HStack {
-            AsyncImage (url: crypto.safeImageURL) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 48, height: 48)
-                    .padding(.trailing)
-            } placeholder: {
-                Image("crypto_template")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 48, height: 48)
-                    .padding(.trailing)
+            VStack {
+                if picture == nil {
+                    Image(systemName: "cloud.circle.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 48, height: 48)
+                        .padding(.trailing)
+                } else {
+                    Image(uiImage: UIImage(data: picture!)!)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 48, height: 48)
+                        .padding(.trailing)
+                }
+            }.onAppear() {
+                Task (priority: .utility) {
+                    do {
+                        picture = try await crypto.downloadPicture()
+                    } catch {
+                        print("Image loading failed: \(error)")
+                    }
+                }
             }
-            
-            
-
             VStack(alignment: .leading) {
 
                 HStack {
