@@ -9,32 +9,29 @@ import SwiftUI
 
 struct CryptoRowView: View {
     
-    @State var crypto: Crypto
-    @State var picture: Data? = nil
+    private let crypto: Crypto
+    @State private var viewModel: CryptoRowViewModel
+    
+    init(crypto: Crypto) {
+        self.crypto = crypto
+        self.viewModel = CryptoRowViewModel(crypto: crypto)
+    }
     
     var body: some View {
         HStack {
             VStack {
-                if picture == nil {
-                    Image(systemName: "cloud.circle.fill")
+                if let picture = viewModel.picture {
+                    Image(uiImage: UIImage(data: picture)!)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 48, height: 48)
                         .padding(.trailing)
                 } else {
-                    Image(uiImage: UIImage(data: picture!)!)
+                    Image(systemName: "cloud.circle.fill")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 48, height: 48)
                         .padding(.trailing)
-                }
-            }.onAppear() {
-                Task (priority: .utility) {
-                    do {
-                        picture = try await crypto.downloadPicture()
-                    } catch {
-                        print("Image loading failed: \(error)")
-                    }
                 }
             }
             VStack(alignment: .leading) {
