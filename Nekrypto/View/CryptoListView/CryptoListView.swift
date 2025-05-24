@@ -81,6 +81,7 @@ struct CryptoListView: View {
                     }
                 }
             }
+            .accessibilityIdentifier("CryptoListView-List")
         } detail: {
             if let selected = viewModel.selected {
                     CryptoDetailView(crypto: selected)

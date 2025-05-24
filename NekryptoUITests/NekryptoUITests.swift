@@ -23,12 +23,36 @@ final class NekryptoUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
+    func testExampdvle() throws {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        app.activate()
+        
+        let refreshButton = app.buttons["Refresh List"]
+        //The app main screen should have a way to refresh the information
+        XCTAssertTrue(refreshButton.exists)
+        
+        //refreshButton.tap() // Tap stopped, trying to use local data to test.
+        let searchField = app.searchFields["Search Crypto"]
+        XCTAssertTrue(searchField.exists)
+        let list = app.collectionViews["CryptoListView-List"]
+        XCTAssertTrue(list.exists)
+    
+        print(list.cells.count) //8 visible at the phone testing...
+        
+        searchField.tap()
+        searchField.typeText("Monero")
+ 
+        XCTAssertTrue(list.cells.count == 1) //1 visible since the search worked perfectly.
+        
+        searchField.tap()
+        searchField.typeText("Moneros")
+        
+        let monerosRow = app.buttons["Moneros"].firstMatch
+        
+        XCTAssertFalse(monerosRow.exists)
+        
     }
 
     @MainActor
