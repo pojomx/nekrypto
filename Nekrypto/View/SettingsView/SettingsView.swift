@@ -10,8 +10,8 @@ import SwiftData
 
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
-    @State fileprivate var viewModel = SettingsViewModel()
-
+    @StateObject var viewModel : SettingsViewModel
+    
     var body: some View {
         NavigationStack {
             List {
@@ -116,7 +116,7 @@ struct SettingsView: View {
 }
 
 #Preview ("No Data") {
-    SettingsView()
+    SettingsView(viewModel: SettingsViewModel()).modelContainer(for: Crypto.self, inMemory: true)
 }
 
 

@@ -12,6 +12,7 @@ struct CryptoListView: View {
 
     @Environment(\.modelContext) private var modelContext
     @State fileprivate var viewModel = CryptoListViewModel()
+    @State fileprivate var settingsViewModel = SettingsViewModel()
 
     var body: some View {
         NavigationSplitView {
@@ -55,7 +56,7 @@ struct CryptoListView: View {
                         Label("Settings", systemImage: "gear")
                     }
                     .sheet(isPresented: $viewModel.displaySettings) {
-                        SettingsView()
+                        SettingsView(viewModel: settingsViewModel)
                             .presentationDragIndicator(.visible)
                             .presentationDetents([.medium, .large])
                     }
@@ -90,13 +91,14 @@ struct CryptoListView: View {
         }
         .onAppear() {
             viewModel.modelContext = modelContext
+            settingsViewModel.modelContext = modelContext
+            viewModel.suscribe(to: settingsViewModel)
             viewModel.refreshList()
         }
     }
 }
 
 #Preview("No Data") {
-    
     CryptoListView()
         .modelContainer(for: Crypto.self, inMemory: true)
 }

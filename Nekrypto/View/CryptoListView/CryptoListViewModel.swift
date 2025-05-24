@@ -84,6 +84,16 @@ class CryptoListViewModel {
             .store(in: &observers)
     }
     
+    func suscribe(to settingsVM: SettingsViewModel) {
+        settingsVM.didRequestRefresh
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                guard let self = self else { return }
+                self.refreshList()
+            }
+            .store(in: &observers)
+    }
+    
     func addCrypto(crypto: Crypto, context: ModelContext) {
         // Search if ID is already registered or not
         let crypto_id = crypto.id
@@ -94,7 +104,7 @@ class CryptoListViewModel {
             if let value = existing.first {
                 value.updateValues(data: crypto)
             } else {
-                print("Algo raro sucedió.")
+                print("Something is wrong here... \(crypto_id)")
             }
             return
         }

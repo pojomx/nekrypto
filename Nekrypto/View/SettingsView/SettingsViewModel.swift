@@ -8,9 +8,13 @@
 import Foundation
 import SwiftData
 import SwiftUI
+import Combine
 
 @Observable
-class SettingsViewModel {
+class SettingsViewModel : ObservableObject {
+    
+    //This is the Passtrough Subject that will notify the others to refresh after deleting.
+    let didRequestRefresh = PassthroughSubject<Void, Never>()
     
     public var modelContext: ModelContext? = nil
     public var showDeleteConfirmationDialog = false
@@ -33,11 +37,16 @@ class SettingsViewModel {
     
     func deleteAllRecords(modelContext: ModelContext) {
         do {
+            //Load All
             refreshList()
             for crypto in cryptoList {
                 modelContext.delete(crypto)
             }
             try modelContext.save()
+            //Clean the list.
+            refreshList()
+            //This calls for CryptoListViewModel to update the list of Cryptos.
+            didRequestRefresh.send()
         } catch {
             errorMessage = "Error deleting the items."
         }
@@ -53,7 +62,7 @@ class SettingsViewModel {
             context.insert(Crypto(data: item))
         }
 
-        return SettingsView().modelContext(context)
+        return SettingsView(viewModel: SettingsViewModel()).modelContext(context)
     }
     
 }
