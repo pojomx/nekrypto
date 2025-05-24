@@ -47,6 +47,20 @@ struct CryptoListView: View {
                         }
                     }
                 }
+                
+                ToolbarItem {
+                    Button {
+                        viewModel.displaySettings.toggle()
+                    } label: {
+                        Label("Settings", systemImage: "gear")
+                    }
+                    .sheet(isPresented: $viewModel.displaySettings) {
+                        SettingsView()
+                            .presentationDragIndicator(.visible)
+                            .presentationDetents([.medium, .large])
+                    }
+                }
+                
             }
             .searchable(text: $viewModel.searchFilter, prompt: "Search Crypto")
             .refreshable(action: {

@@ -20,6 +20,8 @@ class CryptoListViewModel {
     public var searchFilter: String = "" // String to filter with
     private var cryptoList: [Crypto] = [] // Array of Cryptos
     
+    public var displaySettings: Bool = false
+    
     public var filteredCryptos: [Crypto] { // Array of Filtered Cryptos
         if searchFilter.isEmpty {
             return cryptoList
