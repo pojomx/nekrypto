@@ -44,7 +44,7 @@ struct CryptoListView: View {
                         if viewModel.isLoading {
                             ProgressView()
                         } else {
-                            Label("Add Item", systemImage: "arrow.clockwise")
+                            Label("Refresh List", systemImage: "arrow.clockwise")
                         }
                     }
                 }
